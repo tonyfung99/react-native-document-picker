@@ -6,6 +6,16 @@
 #import <React/RCTBridge.h>
 #import <React/RCTUtils.h>
 
+// WEAKIFY & STRONGIFY
+// Helper macro.
+#define weakify(var) __weak typeof(var) RNDocumentPicker_##var = var;
+
+#define strongify(var) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+__strong typeof(var) var = RNDocumentPicker_##var; \
+_Pragma("clang diagnostic pop")
+
 
 static NSString *const E_DOCUMENT_PICKER_CANCELED = @"DOCUMENT_PICKER_CANCELED";
 static NSString *const E_INVALID_DATA_RETURNED = @"INVALID_DATA_RETURNED";
@@ -179,26 +189,36 @@ RCT_EXPORT_METHOD(pick:(NSDictionary *)options
 
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
-    if (controller.documentPickerMode == UIDocumentPickerModeImport) {
-        RCTPromiseResolveBlock resolve = [composeResolvers lastObject];
-        RCTPromiseRejectBlock reject = [composeRejecters lastObject];
-        [composeResolvers removeLastObject];
-        [composeRejecters removeLastObject];
-        
-        NSMutableArray *results = [NSMutableArray array];
-        for (id url in urls) {
-            NSError *error;
-            NSMutableDictionary* result = [self getMetadataForUrl:url error:&error];
-            if (result) {
-                [results addObject:result];
-            } else {
-                reject(E_INVALID_DATA_RETURNED, error.localizedDescription, error);
+     weakify(self);
+        dispatch_async(dispatch_get_main_queue(), ^{
+        strongify(self);
+      
+        if (controller.documentPickerMode == UIDocumentPickerModeImport) {
+            RCTPromiseResolveBlock resolve = [self->composeResolvers lastObject];
+            RCTPromiseRejectBlock reject = [self->composeRejecters lastObject];
+
+            if (resolve == nil) {
                 return;
             }
+
+            [self->composeResolvers removeLastObject];
+            [self->composeRejecters removeLastObject];
+
+            NSMutableArray *results = [NSMutableArray array];
+            for (id url in urls) {
+                NSError *error;
+                NSMutableDictionary* result = [self getMetadataForUrl:url error:&error];
+                if (result) {
+                    [results addObject:result];
+                } else {
+                    reject(E_INVALID_DATA_RETURNED, error.localizedDescription, error);
+                    return;
+                }
+            }
+
+            resolve(results);
         }
-        
-        resolve(results);
-    }
+    });
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
