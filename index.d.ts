@@ -1,7 +1,7 @@
 declare module 'react-native-document-picker' {
-  type UTI = 'public.png' | 'public.jpeg' | 'com.adobe.pdf';
-  type MimeType = 'image/jpg' | 'image/jpeg' | 'image/png' | 'application/pdf';
-  type Extension = '.jpeg' | '.jpg' | '.png' | '.txt' | '.pdf';
+  type UTI = 'public.png' | 'public.jpeg' | 'com.adobe.pdf' | 'com.microsoft.word.doc' | 'org.openxmlformats.wordprocessingml.document';
+  type MimeType = 'image/jpg' | 'image/jpeg' | 'image/png' | 'application/pdf' | 'application/msword' | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  type Extension = '.jpeg' | '.jpg' | '.png' | '.txt' | '.pdf' | '.doc' | '.docx';
 
   type DocumentType = {
     android: MimeType | MimeType[];
@@ -19,6 +19,8 @@ declare module 'react-native-document-picker' {
       pdf: 'application/pdf';
       video: 'video/*';
       zip: 'application/zip';
+      doc: 'application/msword';
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     };
     utis: {
       allFiles: 'public.content';
@@ -29,6 +31,8 @@ declare module 'react-native-document-picker' {
       pdf: 'com.adobe.pdf';
       video: 'public.movie';
       zip: 'public.zip-archive';
+      doc: 'com.microsoft.word.doc';
+      docx: 'org.openxmlformats.wordprocessingml.document';
     };
     extensions: {
       allFiles: '*';
@@ -39,6 +43,8 @@ declare module 'react-native-document-picker' {
       pdf: '.pdf';
       video: '.mp4';
       zip: '.zip .gz';
+      doc: '.doc';
+      docx: '.docx';
     };
   };
   type PlatformTypes = {
