@@ -79,6 +79,8 @@ const Types = {
     pdf: 'application/pdf',
     video: 'video/*',
     zip: 'application/zip',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   },
   utis: {
     allFiles: 'public.content',
@@ -89,6 +91,8 @@ const Types = {
     pdf: 'com.adobe.pdf',
     video: 'public.movie',
     zip: 'public.zip-archive',
+    doc: 'com.microsoft.word.doc',
+    docx: 'org.openxmlformats.wordprocessingml.document'
   },
   extensions: {
     allFiles: '*',
@@ -100,6 +104,8 @@ const Types = {
     pdf: '.pdf',
     video: '.mp4',
     zip: '.zip .gz',
+    doc: '.doc',
+    docx: '.docx',
   },
 };
 
